@@ -30,7 +30,7 @@ def form_example():
 			#return '''<h1>Data Submitted</h1>
 			#		  <p>Values: {}{}{}</p>'''.format(name, lastname, email)
 
-			return render_template("form-success.html")
+			return render_template("form-success.html", name=name, lastname=lastname, email=email)
 		except:
 			return render_template("form-failure.html")
 
