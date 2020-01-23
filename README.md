@@ -26,3 +26,15 @@ CREATE TABLE `checksheet` (
 PRIMARY KEY (`number`)
 ) ENGINE=InnoDB;
 ```
+
+## Login
+
+```sql
+CREATE TABLE `login` (
+`number` INT NOT NULL AUTO_INCREMENT,
+`username` VARCHAR(20) NOT NULL,
+`password` VARCHAR(20) NOT NULL,
+`pin` INT(8) NOT NULL,
+PRIMARY KEY (`number`)
+);
+```
