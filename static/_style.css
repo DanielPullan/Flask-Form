@@ -160,6 +160,7 @@ input {
 input[type=text]{
   color: var(--primary_colour);
   background-color: var(--background);
+  padding: 10px;
 }
 
 input[type=submit]{
