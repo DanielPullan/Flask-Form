@@ -23,11 +23,19 @@
     </div>
     <div class="row">
         <div class="col-4">
-            <form method="POST" action="/logout">
+            {% if username != "Guest" %}
+                <form method="POST" action="/logout">
 
-                <input type="submit" value="Submit"><br>
+                    <input type="submit" value="Logout"><br>
 
-            </form>
+                </form>
+            {% endif %}
+            {% if username == "Guest" %}
+                <form action="/login">
+                    <button type="submit">Login</button>
+                </form>
+            
+            {% endif %}
         </div>
     </div>
 </div>

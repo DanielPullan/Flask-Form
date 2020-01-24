@@ -19,7 +19,7 @@ def home():
 		usercookie = str(request.cookies.get('User'))
 		user_logged_in = True
 	else:
-		usercookie = "Guest1"
+		usercookie = "Guest"
 		user_logged_in = False
 
 
@@ -27,55 +27,66 @@ def home():
 
 @app.route('/checksheet', methods=['GET', 'POST']) #allow both GET and POST requests
 def checksheet():
-	if request.method == 'POST':
-		
-		#name = request.form['name']
-		#lastname = request.form['lastname']
-		#email = request.form['email']
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		if request.method == 'POST':
+			
+			#name = request.form['name']
+			#lastname = request.form['lastname']
+			#email = request.form['email']
 
-		f1 = request.form['name']
-		f2 = request.form['location']
-		f3 = request.form['registration']
-		f4 = request.form['full_toilet_removed']
-		f5 = request.form['clean_toilet_cartridge_supplied']
-		f6 = request.form['new_soap_supplied_to_canteen_and_toilet']
-		f7 = request.form['new_hand_sanitiser_supplied_to_canteen_and_toilet']
-		f8 = request.form['toilet_flush_water_refilled']
-		f9 = request.form['hand_wash_water_refilled_and_dirty_water_emptied']
-		f10 = request.form['canteen_cleaned']
-		f11 = request.form['toilet_area_cleaned']
-		f12 = request.form['toilet_roll_supplied']
-		f13 = request.form['hand_towels_supplied']
+			f1 = request.form['name']
+			f2 = request.form['location']
+			f3 = request.form['registration']
+			f4 = request.form['full_toilet_removed']
+			f5 = request.form['clean_toilet_cartridge_supplied']
+			f6 = request.form['new_soap_supplied_to_canteen_and_toilet']
+			f7 = request.form['new_hand_sanitiser_supplied_to_canteen_and_toilet']
+			f8 = request.form['toilet_flush_water_refilled']
+			f9 = request.form['hand_wash_water_refilled_and_dirty_water_emptied']
+			f10 = request.form['canteen_cleaned']
+			f11 = request.form['toilet_area_cleaned']
+			f12 = request.form['toilet_roll_supplied']
+			f13 = request.form['hand_towels_supplied']
 
-		cur = conn.cursor()
-		cur.execute("INSERT INTO checksheet3 (name, location, registration, full_toilet_removed, clean_toilet_cartridge_supplied, new_soap_supplied_to_canteen_and_toilet, new_hand_sanitiser_supplied_to_canteen_and_toilet, toilet_flush_water_refilled, hand_wash_water_refilled_and_dirty_water_emptied, canteen_cleaned, toilet_area_cleaned, toilet_roll_supplied,hand_towels_supplied) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13))
-		cur.close()
+			cur = conn.cursor()
+			cur.execute("INSERT INTO checksheet3 (name, location, registration, full_toilet_removed, clean_toilet_cartridge_supplied, new_soap_supplied_to_canteen_and_toilet, new_hand_sanitiser_supplied_to_canteen_and_toilet, toilet_flush_water_refilled, hand_wash_water_refilled_and_dirty_water_emptied, canteen_cleaned, toilet_area_cleaned, toilet_roll_supplied,hand_towels_supplied) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13))
+			cur.close()
 
-		#return '''<h1>Data Submitted</h1>
-		#		  <p>Values: {}{}{}</p>'''.format(name, lastname, email)
+			#return '''<h1>Data Submitted</h1>
+			#		  <p>Values: {}{}{}</p>'''.format(name, lastname, email)
 
-		return render_template("checksheet-success.html")
+			return render_template("checksheet-success.html")
+	else:
+		res = make_response(redirect('/stare'))
+		return res
 
 	return render_template("checksheet.html")
 
 
 @app.route('/form-example', methods=['GET', 'POST']) #allow both GET and POST requests
 def form_example():
-	if request.method == 'POST':
-		try:
-			name = request.form['name']
-			lastname = request.form['lastname']
-			email = request.form['email']
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		print("Poop")
+		if request.method == 'POST':
+			try:
+				name = request.form['name']
+				lastname = request.form['lastname']
+				email = request.form['email']
 
-			cur = conn.cursor()
-			cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
-			cur.close()
+				cur = conn.cursor()
+				cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
+				cur.close()
 
-			return render_template("form-success.html", name=name, lastname=lastname, email=email)
-		except:
-			return render_template("form-failure.html")
+				return render_template("form-success.html", name=name, lastname=lastname, email=email)
+			except:
+				return render_template("form-failure.html")
 
-	return render_template("form-example.html")
+		return render_template("form-example.html")
+	else:
+		res = make_response(redirect('/stare'))
+		return res
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -114,7 +125,7 @@ def login():
 			security = 0
 
 		if security == 3:
-			resp = make_response('Setting cookie!')
+			resp = make_response(redirect('/'))
 			resp.set_cookie('OhCanada', 'GreenAndPleasantLand')
 			resp.set_cookie('User', username)
 			return resp
