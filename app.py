@@ -13,7 +13,17 @@ conn = pymysql.connect(host=host, port=3306, user=user, passwd=pw, db=database, 
 
 @app.route('/')
 def home():
-	return render_template("index.html")
+	cookie = str(request.cookies.get('OhCanada'))
+
+	if cookie == "GreenAndPleasantLand":
+		usercookie = str(request.cookies.get('User'))
+		user_logged_in = True
+	else:
+		usercookie = "Guest"
+		user_logged_in = False
+
+
+	return render_template("index.html", username=usercookie)
 
 @app.route('/checksheet', methods=['GET', 'POST']) #allow both GET and POST requests
 def checksheet():
@@ -83,44 +93,60 @@ def login():
 
 	#TODO: blah stuff. get the data from the data in blah to become variables and then do the whole if the form password matches the database one, create the cookie and shit
 
-		submittedusername = results[1]
-		submittedpassword = results[2]
-		submittedpin = results[3]
+		security = 0
 
-		if username == submittedusername:
-			print("username matches")
-		else:
-			return "fail"
+		submittedusername = str(results[1])
+		submittedpassword = str(results[2])
+		submittedpin = str(results[3])
 
-		if password == submittedpassword:
-			print("password matches")
-		else:
-			return "fail"
-
-		if pin == submittedpin:
-			print("pin matches, we good in the hood")
+		if submittedusername == username:
+			security = security + 1
 		else: 
-			return "fail"
+			security = 0
 
-		return result
+		if submittedpassword == password:
+			security = security + 1
+		else:
+			security = 0
+		if submittedpin == pin:
+			security = security + 1
+		else:
+			security = 0
 
-		# if successful, set the cookie and go to successful login
+		if security == 3:
+			resp = make_response('Setting cookie!')
+			resp.set_cookie('OhCanada', 'GreenAndPleasantLand')
+			resp.set_cookie('User', username)
+			return resp
+		else:
+			print(security)
+			print(submittedusername)
+			print(submittedpassword)
+			print(submittedpin)
+			print(username)
+			print(password)
+			print(pin)
+			return "login failed"
 
-		# if failed, don't set the cookie, go to sad cat
-		#return render_template("form-success.html", name=name, lastname=lastname, email=email)
 	return render_template("login.html")
-	
 
-@app.route('/set')
-def setcookie():
-	resp = make_response('Setting cookie!')
-	resp.set_cookie('genitals', 'penis')
-	return resp
+
+@app.route('/logout')
+def logout():
+	res = make_response("Cookie Removed")
+	res.set_cookie('OhCanada', 'Quebec')
+	return res
+
 
 @app.route('/get')
 def getcookie():
-	framework = request.cookies.get('genitals')
-	return framework
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		return cookie
+	else:
+		res = make_response("I know who I am")
+		res.set_cookie('OhCanada', 'Quebec')
+		return res
 
 if __name__ == "__main__":
 	app.run(debug=True)
