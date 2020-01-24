@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, make_response
+from flask import Flask, request, render_template, make_response, redirect
 import pymysql
 from config import where_did_you_come_from, the_greatest_username_ever, the_most_secure_password_ever
 
@@ -19,7 +19,7 @@ def home():
 		usercookie = str(request.cookies.get('User'))
 		user_logged_in = True
 	else:
-		usercookie = "Guest"
+		usercookie = "Guest1"
 		user_logged_in = False
 
 
@@ -131,9 +131,9 @@ def login():
 	return render_template("login.html")
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
-	res = make_response("Cookie Removed")
+	res = make_response(redirect('/'))
 	res.set_cookie('OhCanada', 'Quebec')
 	return res
 
@@ -144,9 +144,13 @@ def getcookie():
 	if cookie == "GreenAndPleasantLand":
 		return cookie
 	else:
-		res = make_response("I know who I am")
+		res = make_response(redirect('/stare'))
 		res.set_cookie('OhCanada', 'Quebec')
 		return res
+
+@app.route('/stare')
+def stare():
+	return render_template('stare.html')
 
 if __name__ == "__main__":
 	app.run(debug=True)
