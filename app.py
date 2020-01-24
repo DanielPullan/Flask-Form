@@ -64,6 +64,32 @@ def checksheet():
 	return render_template("checksheet.html")
 
 
+@app.route('/waste-transfer', methods=['GET', 'POST'])
+def waste_transfer():
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		print("Poop")
+		if request.method == 'POST':
+			try:
+				customer_name = request.form['customer_name']
+				collection_point = request.form['collection_point']
+				agent_name = str(request.cookies.get('User'))
+
+				cur = conn.cursor()
+				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (customer_name, collection_point,agent_name))
+				cur.close()
+
+				res = make_response(redirect('/waste-transfer'))
+				return res
+			except:
+				return "You fucked it up. BOIIIIIIII"
+
+		return render_template("waste-transfer.html")
+	else:
+		res = make_response(redirect('/stare'))
+		return res
+
+
 @app.route('/form-example', methods=['GET', 'POST']) #allow both GET and POST requests
 def form_example():
 	cookie = str(request.cookies.get('OhCanada'))

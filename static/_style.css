@@ -167,3 +167,9 @@ input[type=submit]{
   color: var(--primary_colour);
   background-color: var(--background);
 }
+
+select {
+  color: var(--primary_colour);
+  background-color: var(--background);
+  width: 100%;
+}
