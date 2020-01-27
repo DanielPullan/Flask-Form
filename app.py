@@ -61,7 +61,14 @@ def checksheet():
 		res = make_response(redirect('/stare'))
 		return res
 
-	return render_template("checksheet.html")
+	cur = conn.cursor()
+	cur.execute("select name from customers")
+	rows = cur.fetchall()
+	cur.close()
+
+	list_of_customers = [str(x) for x, in rows]
+
+	return render_template("checksheet.html", list_of_customers=list_of_customers)
 
 
 @app.route('/waste-transfer', methods=['GET', 'POST'])
@@ -126,6 +133,54 @@ def form_example():
 				return render_template("form-failure.html")
 
 		return render_template("form-example.html")
+	else:
+		res = make_response(redirect('/stare'))
+		return res
+
+@app.route('/add-customer', methods=['GET', 'POST'])
+def add_customer():
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		print("Poop")
+		if request.method == 'POST':
+			try:
+				name = request.form['name']
+				lastname = request.form['lastname']
+				email = request.form['email']
+
+				cur = conn.cursor()
+				cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
+				cur.close()
+
+				return render_template("form-success.html", name=name, lastname=lastname, email=email)
+			except:
+				return render_template("form-failure.html")
+
+		return render_template("add-customer.html")
+	else:
+		res = make_response(redirect('/stare'))
+		return res
+
+@app.route('/add-location', methods=['GET', 'POST'])
+def add_location():
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		print("Poop")
+		if request.method == 'POST':
+			try:
+				name = request.form['name']
+				lastname = request.form['lastname']
+				email = request.form['email']
+
+				cur = conn.cursor()
+				cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
+				cur.close()
+
+				return render_template("form-success.html", name=name, lastname=lastname, email=email)
+			except:
+				return render_template("form-failure.html")
+
+		return render_template("add-location.html")
 	else:
 		res = make_response(redirect('/stare'))
 		return res
