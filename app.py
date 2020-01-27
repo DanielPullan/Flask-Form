@@ -69,7 +69,6 @@ def waste_transfer():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
 		print("Poop")
-
 		if request.method == 'POST':
 			try:
 
@@ -86,8 +85,23 @@ def waste_transfer():
 			except:
 				return "You fucked it up. BOIIIIIIII"
 
-		list_of_customers = ['Billy', 'Barry', 'Ben', 'Boris']
-		return render_template("waste-transfer.html", list_of_customers=list_of_customers)
+		cur = conn.cursor()
+		cur.execute("select name from customers")
+		rows = cur.fetchall()
+		cur.close()
+
+		list_of_customers = [str(x) for x, in rows]
+
+		cur = conn.cursor()
+		cur.execute("select name from locations")
+		rows = cur.fetchall()
+		cur.close()
+
+		list_of_locations = [str(x) for x, in rows]
+
+		#list_of_customers = ['Billy', 'Barry', 'Ben', 'Boris']
+		#list_of_locations = ['Midgard', 'Isengard', 'Diagon Alley']
+		return render_template("waste-transfer.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations)
 	else:
 		res = make_response(redirect('/stare'))
 		return res

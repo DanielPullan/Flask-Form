@@ -16,10 +16,9 @@
 					<option value="Ringo">Ringo</option>
 				</select>-->
 				Collection Point: <select name ="collection_point">
-					<option value="Moon">Moon</option>
-					<option value="Mars">Mars</option>
-					<option value="Pluto">Pluto</option>
-					<option value="Docks">Docks</option>
+					{% for x in list_of_locations %}
+						<option value= "{{x}}">{{x}}</option>"
+					{% endfor %}
 				</select>
 				<input type="submit" value="Submit"><br>
 			</form>
