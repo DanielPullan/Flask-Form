@@ -1,29 +1,29 @@
 {% include "header.html" %}
-
 <div class="container">
-  <div class="row">
-      <div class="col-12">
-        <h1>Waste Collection Form</h1>
-
-        <form method="POST">
-              Customer Name: <select name ="customer_name">
-                <option value="Becky">Becky</option>
-                <option value="Paul">Paul</option>
-                <option value="Janice">Janice</option>
-                <option value="Ringo">Ringo</option>
-              </select>
-
-              Collection Point: <select name ="collection_point">
-                <option value="Moon">Moon</option>
-                <option value="Mars">Mars</option>
-                <option value="Pluto">Pluto</option>
-                <option value="Docks">Docks</option>
-              </select>
-
-              <input type="submit" value="Submit"><br>
-          </form>
-      </div>
-  </div>
+	<div class="row">
+		<div class="col-12">
+			<h1>Waste Collection Form</h1>
+			<form method="POST">
+				Customer Name: <select name ="customer_name">
+					{% for x in list_of_customers %}
+						<option value= "{{x}}">{{x}}</option>"
+					{% endfor %}
+				</select>
+				<!--Customer Name: <select name ="customer_name">
+					<option value="Becky">Becky</option>
+					<option value="Paul">Paul</option>
+					<option value="Janice">Janice</option>
+					<option value="Ringo">Ringo</option>
+				</select>-->
+				Collection Point: <select name ="collection_point">
+					<option value="Moon">Moon</option>
+					<option value="Mars">Mars</option>
+					<option value="Pluto">Pluto</option>
+					<option value="Docks">Docks</option>
+				</select>
+				<input type="submit" value="Submit"><br>
+			</form>
+		</div>
+	</div>
 </div>
-
 {% include "footer.html" %}

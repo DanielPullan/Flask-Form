@@ -3,30 +3,9 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1>Welcome {{username}}</h1>
-            <p>This app is a work in progress of a program made in python to submit data to a database. The end goal will be to write further scripts to pull that data out and make it easy to print etc.</p>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/form-example">The example form</a></li>
-                <li><a href="/form-success">The success form</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            {% if username != "Guest" %}
-                <form method="POST" action="/logout">
-
-                    <input type="submit" value="Logout"><br>
-
-                </form>
-            {% endif %}
-            {% if username == "Guest" %}
-                <form action="/login">
-                    <button type="submit">Login</button>
-                </form>
-            
-            {% endif %}
+            <h2>Welcome {{ username }}</h2>
+            <p>This web application is still a heavy work in progress.</p>
+            <p>Report any issues to <a href="mailto:danjakob@enablebusiness.co.uk?subject=EB Forms">Support</a></p>
         </div>
     </div>
 </div>

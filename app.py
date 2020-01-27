@@ -69,8 +69,10 @@ def waste_transfer():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
 		print("Poop")
+
 		if request.method == 'POST':
 			try:
+
 				customer_name = request.form['customer_name']
 				collection_point = request.form['collection_point']
 				agent_name = str(request.cookies.get('User'))
@@ -84,11 +86,11 @@ def waste_transfer():
 			except:
 				return "You fucked it up. BOIIIIIIII"
 
-		return render_template("waste-transfer.html")
+		list_of_customers = ['Billy', 'Barry', 'Ben', 'Boris']
+		return render_template("waste-transfer.html", list_of_customers=list_of_customers)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
-
 
 @app.route('/form-example', methods=['GET', 'POST']) #allow both GET and POST requests
 def form_example():
@@ -167,13 +169,11 @@ def login():
 
 	return render_template("login.html")
 
-
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
 	res = make_response(redirect('/'))
 	res.set_cookie('OhCanada', 'Quebec')
 	return res
-
 
 @app.route('/get')
 def getcookie():

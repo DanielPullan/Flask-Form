@@ -9,6 +9,19 @@
 
 <body>
 
-<div class="row">
-	<h1 style="text-align: center;">EB Forms</h1>
+<div class="container">
+	<div class="row">
+		<h1 style="text-align: center;">EB Forms</h1>
+			<div class="topnav" id="myTopnav">
+				<a href="/form-example">Example Form</a>
+				<a href="/waste-transfer">Waste Transfer</a>
+				<a href="/checksheet">Checksheet</a>
+				{% if username != "Guest" %}
+					<a href="/logout">Logout</a>
+				{% endif %}
+				{% if username == "Guest" %}
+					<a href="/login">Login</a>
+				{% endif %}
+	        </div>
+	</div>
 </div>
