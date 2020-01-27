@@ -166,10 +166,26 @@ input[type=text]{
 input[type=submit]{
   color: var(--primary_colour);
   background-color: var(--background);
+  padding: 10px;
+  margin-top:30px;  
+}
+
+input[type=password]{
+  color: var(--primary_colour);
+  background-color: var(--background);
+  padding: 10px;
 }
 
 select {
   color: var(--primary_colour);
   background-color: var(--background);
   width: 100%;
+  padding: 10px;
+}
+
+button {
+  color: var(--primary_colour);
+  background-color: var(--background);
+  border-radius: 3px;
+  padding: 10px;
 }
