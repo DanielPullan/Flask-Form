@@ -78,7 +78,6 @@ def checksheet():
 def waste_transfer():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
-		print("Poop")
 		if request.method == 'POST':
 			try:
 
@@ -120,7 +119,6 @@ def waste_transfer():
 def form_example():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
-		print("Poop")
 		if request.method == 'POST':
 			try:
 				name = request.form['name']
@@ -144,7 +142,6 @@ def form_example():
 def add_transferor():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
-		print("Poop")
 		if request.method == 'POST':
 			try:
 				name = request.form['name']
@@ -158,16 +155,12 @@ def add_transferor():
 				county = request.form['county']
 				postcode = request.form['postcode']
 				siccode = request.form['siccode']
-
-
 				cur = conn.cursor()
 				cur.execute("INSERT INTO transferors (name,lastname,phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode))
 				cur.close()
-
-				return render_template("form-success.html", name=name, lastname=lastname, email=email)
+				return render_template("form-success.html")
 			except:
 				return render_template("form-failure.html")
-
 		return render_template("add-transferor.html")
 	else:
 		res = make_response(redirect('/stare'))
@@ -177,7 +170,6 @@ def add_transferor():
 def add_location():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
-		print("Poop")
 		if request.method == 'POST':
 			try:
 				name = request.form['name']
