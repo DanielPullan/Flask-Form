@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, make_response, redirect
 import pymysql
 from config import where_did_you_come_from, the_greatest_username_ever, the_most_secure_password_ever
-
+ 
 app = Flask(__name__)
 
 host = where_did_you_come_from
@@ -13,6 +13,9 @@ conn = pymysql.connect(host=host, port=3306, user=user, passwd=pw, db=database, 
 
 @app.route('/')
 def home():
+
+	userIP = str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
+
 	cookie = str(request.cookies.get('OhCanada'))
 
 	if cookie == "GreenAndPleasantLand":
@@ -23,7 +26,7 @@ def home():
 		user_logged_in = False
 
 
-	return render_template("index.html", username=usercookie)
+	return render_template("index.html", username=usercookie, userIP=userIP)
 
 @app.route('/checksheet', methods=['GET', 'POST']) #allow both GET and POST requests
 def checksheet():
@@ -87,10 +90,10 @@ def waste_transfer():
 				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (customer_name, collection_point,agent_name))
 				cur.close()
 
-				res = make_response(redirect('/waste-transfer'))
+				res = render_template('form-success.html')
 				return res
 			except:
-				return "You fucked it up. BOIIIIIIII"
+				return render_template('form-success.html')
 
 		cur = conn.cursor()
 		cur.execute("select name from customers")
@@ -137,8 +140,8 @@ def form_example():
 		res = make_response(redirect('/stare'))
 		return res
 
-@app.route('/add-customer', methods=['GET', 'POST'])
-def add_customer():
+@app.route('/add-transferor', methods=['GET', 'POST'])
+def add_transferor():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
 		print("Poop")
@@ -146,17 +149,26 @@ def add_customer():
 			try:
 				name = request.form['name']
 				lastname = request.form['lastname']
+				phonenumber = request.form['phonenumber']
 				email = request.form['email']
+				business = request.form['business']
+				address_line1 = request.form['address_line1']
+				address_line2 = request.form['address_line2']
+				town = request.form['town']
+				county = request.form['county']
+				postcode = request.form['postcode']
+				siccode = request.form['siccode']
+
 
 				cur = conn.cursor()
-				cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
+				cur.execute("INSERT INTO transferors (name,lastname,phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode))
 				cur.close()
 
 				return render_template("form-success.html", name=name, lastname=lastname, email=email)
 			except:
 				return render_template("form-failure.html")
 
-		return render_template("add-customer.html")
+		return render_template("add-transferor.html")
 	else:
 		res = make_response(redirect('/stare'))
 		return res
@@ -257,6 +269,11 @@ def getcookie():
 @app.route('/stare')
 def stare():
 	return render_template('stare.html')
+
+@app.route('/humans.txt')
+def humans():
+	return render_template('humans.txt')
+
 
 if __name__ == "__main__":
 	app.run(debug=True)

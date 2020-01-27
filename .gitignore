@@ -6,3 +6,5 @@ config.py
 makeuser.py
 
 testing.py
+
+static/noise.mp3
