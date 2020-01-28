@@ -6,12 +6,17 @@
         <div class="col-12">
           <h2>Checksheet</h2>
             <form method="POST">
-                  <select name ="customer_name">
+                  Customer name: <select name ="customer_name">
                     {% for x in list_of_customers %}
                       <option value= "{{x}}">{{x}}</option>"
                     {% endfor %}
-                  </select>
-                  Location <input type="text" name="location"><br>
+                  </select> <br>
+
+                  Location: <select name ="location">
+                    {% for x in list_of_locations %}
+                      <option value= "{{x}}">{{x}}</option>"
+                    {% endfor %}
+                  </select> <br>
 
                   Registration: <input type="text" name="registration"><br>
 

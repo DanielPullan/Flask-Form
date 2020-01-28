@@ -65,13 +65,21 @@ def checksheet():
 		return res
 
 	cur = conn.cursor()
-	cur.execute("select name from customers")
+	cur.execute("select name from transferors")
 	rows = cur.fetchall()
 	cur.close()
 
 	list_of_customers = [str(x) for x, in rows]
 
-	return render_template("checksheet.html", list_of_customers=list_of_customers)
+	cur = conn.cursor()
+	cur.execute("select name from collection_point")
+	rows = cur.fetchall()
+	cur.close()
+
+	list_of_locations = [str(x) for x, in rows]
+
+
+	return render_template("checksheet.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations)
 
 
 @app.route('/waste-transfer', methods=['GET', 'POST'])
