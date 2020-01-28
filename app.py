@@ -95,14 +95,14 @@ def waste_transfer():
 				return render_template('form-success.html')
 
 		cur = conn.cursor()
-		cur.execute("select name from customers")
+		cur.execute("select name from transferors")
 		rows = cur.fetchall()
 		cur.close()
 
 		list_of_customers = [str(x) for x, in rows]
 
 		cur = conn.cursor()
-		cur.execute("select name from locations")
+		cur.execute("select name from collection_point")
 		rows = cur.fetchall()
 		cur.close()
 
@@ -155,16 +155,20 @@ def add_transferor():
 				county = request.form['county']
 				postcode = request.form['postcode']
 				siccode = request.form['siccode']
+
 				cur = conn.cursor()
 				cur.execute("INSERT INTO transferors (name,lastname,phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode))
 				cur.close()
-				return render_template("form-success.html")
+
+				return render_template("form-success.html", name=name, lastname=lastname, email=email)
 			except:
 				return render_template("form-failure.html")
+
 		return render_template("add-transferor.html")
 	else:
 		res = make_response(redirect('/stare'))
 		return res
+
 
 @app.route('/add-location', methods=['GET', 'POST'])
 def add_location():
@@ -173,14 +177,18 @@ def add_location():
 		if request.method == 'POST':
 			try:
 				name = request.form['name']
-				lastname = request.form['lastname']
-				email = request.form['email']
+				company = request.form['company']
+				address_line1 = request.form['address_line1']
+				address_line2 = request.form['address_line2']
+				town = request.form['town']
+				county = request.form['county']
+				postcode = request.form['postcode']
 
 				cur = conn.cursor()
-				cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
+				cur.execute("INSERT INTO collection_point (name,company,address_line1, address_line2, town, county, postcode) VALUES (%s,%s,%s,%s,%s,%s,%s);", (name, company, address_line1, address_line2, town, county, postcode))
 				cur.close()
 
-				return render_template("form-success.html", name=name, lastname=lastname, email=email)
+				return render_template("form-success.html")
 			except:
 				return render_template("form-failure.html")
 
