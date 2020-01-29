@@ -223,27 +223,28 @@ def get_report():
 
 	cur = conn.cursor()
 	cur.execute("SELECT * from transferors where name = %s", (customer))
-	result = str(cur.fetchall())
+	result = cur.fetchone()[0:12]
 	#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 	cur.close()
 
-	print(result)
+	name = str(result[1])
+	lastname = str(result[2])
+	phonenumber = str(result[3])
+	email = str(result[4])
+	business = str(result[5])
+	address_line1 = str(result[6])
+	address_line2 = str(result[7])
+	town = str(result[8])
+	county = str(result[9])
+	postcode = str(result[10])
+	siccode = str(result[11])
 
-	# name = str(result[1])
-	# lastname = str(result[2])
-	# phonenumber = str(result[3])
-	# email = str(result[4])
-	# business = str(result[5])
-	# address_line1 = str(result[6])
-	# address_line2 = str(result[7])
-	# town = str(result[8])
-	# county = str(result[9])
-	# postcode = str(result[10])
-	# siccode = str(result[11])
+	# Note to future Dan. the above works. you need to create a template for a report. Look at the dead trees on the desk for ideas. This was a massive pain to get working right.
 
+	what = "worked"
 	
 
-	return result
+	return county
 
 
 
