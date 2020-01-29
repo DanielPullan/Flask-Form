@@ -25,8 +25,8 @@ def home():
 		usercookie = "Guest"
 		user_logged_in = False
 
-
-	return render_template("index.html", username=usercookie, userIP=userIP)
+	title = "Home"
+	return render_template("index.html", username=usercookie, userIP=userIP, title=title)
 
 @app.route('/checksheet', methods=['GET', 'POST']) #allow both GET and POST requests
 def checksheet():
@@ -78,8 +78,8 @@ def checksheet():
 
 	list_of_locations = [str(x) for x, in rows]
 
-
-	return render_template("checksheet.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations)
+	title = "Checksheet"
+	return render_template("checksheet.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations, title=title)
 
 
 @app.route('/waste-transfer', methods=['GET', 'POST'])
@@ -97,7 +97,19 @@ def waste_transfer():
 				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (customer_name, collection_point,agent_name))
 				cur.close()
 
-				res = render_template('form-success.html')
+
+				#cur = conn.cursor()
+				#cur.execute("SELECT * FROM waste_transfer ORDER BY id DESC LIMIT 1")
+				#result = cursor.fetchone()
+				#cur.close()
+
+				#qwerty = str(result)
+
+
+
+				## TODO: Email the waste transfer thing
+
+				res = render_template('form-success.html', result=qwerty)
 				return res
 			except:
 				return render_template('form-success.html')
@@ -118,7 +130,8 @@ def waste_transfer():
 
 		#list_of_customers = ['Billy', 'Barry', 'Ben', 'Boris']
 		#list_of_locations = ['Midgard', 'Isengard', 'Diagon Alley']
-		return render_template("waste-transfer.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations)
+		title = "Waste Transfer"
+		return render_template("waste-transfer.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations, title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
@@ -141,7 +154,8 @@ def form_example():
 			except:
 				return render_template("form-failure.html")
 
-		return render_template("form-example.html")
+		title = "Form Example"
+		return render_template("form-example.html", title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
@@ -172,7 +186,8 @@ def add_transferor():
 			except:
 				return render_template("form-failure.html")
 
-		return render_template("add-transferor.html")
+		title = "Add Transferors"
+		return render_template("add-transferor.html", title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
@@ -200,10 +215,36 @@ def add_location():
 			except:
 				return render_template("form-failure.html")
 
-		return render_template("add-location.html")
+		title="Add Location"
+		return render_template("add-location.html", title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
+
+# @app.route('/get-report')
+# def get_report():
+
+# 	current_agent = str(request.cookies.get('User'))
+# 	## Get all collections by the currently logged in user
+# 	cur = conn.cursor()
+# 	cur.execute("select * from waste_transfer where agent_name= %s;", (current_agent))
+# 	rows = cur.fetchall()
+# 	cur.close()
+# 	list_of_collections = [str(x) for x, in rows]
+# 	final = str(rows[-1])
+# 	## Get the most ecent one
+# 	## Return it as a printable format for the printer
+# 	## Email it
+# 	return final
+# # 	except:
+# 	# 		return render_template("form-failure.html")
+
+		
+# 	# else:
+# 	# 	res = make_response(redirect('/stare'))
+# 	# 	return res
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -255,8 +296,8 @@ def login():
 			print(password)
 			print(pin)
 			return "login failed"
-
-	return render_template("login.html")
+	title = "Login"
+	return render_template("login.html", title=title)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -276,7 +317,8 @@ def getcookie():
 
 @app.route('/stare')
 def stare():
-	return render_template('stare.html')
+	title = "Nope"
+	return render_template('stare.html', title=title)
 
 @app.route('/humans.txt')
 def humans():

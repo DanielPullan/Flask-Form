@@ -6,7 +6,7 @@
   /* Change colours in :root as you can theme your own version with your own colours quickly */
   --background: #404552;
   --primary_colour: #fff;
-  --secondary_colour: #5294e2;
+  --secondary_colour: #fff;
   --title_font: 'Fira Sans', sans-serif;
   --body_font: 'Fira Sans', sans-serif;
 }
@@ -20,7 +20,7 @@ body {
   font-size: 18px;
   font-weight: 300;
   line-height: 1.8;
-  color: var(primary_colour);
+  color: var(--primary_colour);
   background: var(--background);
 }
 
