@@ -1,0 +1,32 @@
+{% include "header.html" %}
+
+{{ result }}
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <h2>Transferors Details</h2>
+            <ul>
+	            <li>{{ transferors_name }} {{transferors_lastname }}</li><br>
+	            <li>{{ transferors_phonenumber }}</li><br>
+	            <li>{{ transferors_email }}</li><br>
+	            <li>{{ transferors_business }}</li><br>
+	            <li>{{ transferors_address_line1 }}</li><br>
+	            <li>{{ transferors_address_line2 }}</li><br>
+	            <li>{{ transferors_town }}</li><br>
+	            <li>{{ transferors_county }}</li><br>
+	            <li>{{ transferors_postcode }}</li><br>
+	            <li>{{ transferors_siccode }}</li><br>
+        	</ul>
+        </div>
+        <div class="col-4">
+        	<h2>Transferees Details</h2>
+        	<ul>
+        		<li>
+
+        	</ul>
+        </div>
+    </div>
+</div>
+
+{% include "footer.html" %}

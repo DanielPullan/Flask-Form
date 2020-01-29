@@ -223,28 +223,49 @@ def get_report():
 
 	cur = conn.cursor()
 	cur.execute("SELECT * from transferors where name = %s", (customer))
-	result = cur.fetchone()[0:12]
+	transgerors_result = cur.fetchone()[0:12]
 	#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 	cur.close()
 
-	name = str(result[1])
-	lastname = str(result[2])
-	phonenumber = str(result[3])
-	email = str(result[4])
-	business = str(result[5])
-	address_line1 = str(result[6])
-	address_line2 = str(result[7])
-	town = str(result[8])
-	county = str(result[9])
-	postcode = str(result[10])
-	siccode = str(result[11])
+	transferors_name = str(transferors_result[1])
+	transferors_lastname = str(transferors_result[2])
+	transferors_phonenumber = str(transferors_result[3])
+	transferors_email = str(transferors_result[4])
+	transferors_business = str(transferors_result[5])
+	transferors_address_line1 = str(transferors_result[6])
+	transferors_address_line2 = str(transferors_result[7])
+	transferors_town = str(transferors_result[8])
+	transferors_county = str(transferors_result[9])
+	transferors_postcode = str(transferors_result[10])
+	transferors_siccode = str(transferors_result[11])
+
+	cur = conn.cursor()
+	cur.execute("SELECT * from agents where name = %s", (agent_name))
+	agents_result = cur.fetchone()[0:12]
+	#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
+	cur.close()
+
+	agents_name = str(agents_result[1])
+	agents_lastname = str(agents_result[2])
+	agents_phonenumber = str(agents_result[3])
+	agents_email = str(agents_result[4])
+	agents_business = str(agents_result[5])
+	agents_address_line1 = str(agents_result[6])
+	agents_address_line2 = str(agents_result[7])
+	agents_town = str(agents_result[8])
+	agents_county = str(agents_result[9])
+	agents_postcode = str(agents_result[10])
+	agents_siccode = str(agents_result[11])
+
+
+
 
 	# Note to future Dan. the above works. you need to create a template for a report. Look at the dead trees on the desk for ideas. This was a massive pain to get working right.
 
-	what = "worked"
+	title="Report"
 	
 
-	return county
+	return render_template("report.html", title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode)
 
 
 
