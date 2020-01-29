@@ -97,16 +97,6 @@ def waste_transfer():
 				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (customer_name, collection_point,agent_name))
 				cur.close()
 
-
-				#cur = conn.cursor()
-				#cur.execute("SELECT * FROM waste_transfer ORDER BY id DESC LIMIT 1")
-				#result = cursor.fetchone()
-				#cur.close()
-
-				#qwerty = str(result)
-
-
-
 				## TODO: Email the waste transfer thing
 
 				res = render_template('form-success.html', result=qwerty)
@@ -221,28 +211,39 @@ def add_location():
 		res = make_response(redirect('/stare'))
 		return res
 
-# @app.route('/get-report')
-# def get_report():
+@app.route('/get-report')
+def get_report():
 
-# 	current_agent = str(request.cookies.get('User'))
-# 	## Get all collections by the currently logged in user
-# 	cur = conn.cursor()
-# 	cur.execute("select * from waste_transfer where agent_name= %s;", (current_agent))
-# 	rows = cur.fetchall()
-# 	cur.close()
-# 	list_of_collections = [str(x) for x, in rows]
-# 	final = str(rows[-1])
-# 	## Get the most ecent one
-# 	## Return it as a printable format for the printer
-# 	## Email it
-# 	return final
-# # 	except:
-# 	# 		return render_template("form-failure.html")
+	current_agent = str(request.cookies.get('User'))
 
-		
-# 	# else:
-# 	# 	res = make_response(redirect('/stare'))
-# 	# 	return res
+	cur = conn.cursor()
+	cur.execute("SELECT customer_name FROM waste_transfer where agent_name = %s ORDER BY number DESC LIMIT 1", (current_agent))
+	customer = str(cur.fetchone()[0])
+	cur.close()
+
+	cur = conn.cursor()
+	cur.execute("SELECT * from transferors where name = %s", (customer))
+	result = str(cur.fetchall())
+	#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
+	cur.close()
+
+	print(result)
+
+	# name = str(result[1])
+	# lastname = str(result[2])
+	# phonenumber = str(result[3])
+	# email = str(result[4])
+	# business = str(result[5])
+	# address_line1 = str(result[6])
+	# address_line2 = str(result[7])
+	# town = str(result[8])
+	# county = str(result[9])
+	# postcode = str(result[10])
+	# siccode = str(result[11])
+
+	
+
+	return result
 
 
 
