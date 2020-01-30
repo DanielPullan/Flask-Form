@@ -10,23 +10,41 @@
 
 <body>
 
+
+
 <div class="container">
 	<div class="row">
 		<h1 style="text-align: center;">EB Forms</h1>
-			<div class="topnav" id="myTopnav">
-				<a href="/form-example">Example Form</a>
-				<a href="/waste-transfer">Waste Transfer</a>
-				<a href="/checksheet">Checksheet</a>
-				<a href="/add-transferor">Add Transferor</a>
-				<a href="/add-location">Add Location</a>
-				<a href="/get-report">Pretty Report</a>
-				<a href="/print-report">Ugly Report</a>
-				{% if username != "Guest" %}
-					<a href="/logout">Logout</a>
-				{% endif %}
-				{% if username == "Guest" %}
-					<a href="/login">Login</a>
-				{% endif %}
-	        </div>
+		<div class="topnav" id="myTopnav">
+			<a href="/">Home</a>
+			<a href="/form-example">Example Form</a>
+			<a href="/waste-transfer">Waste Transfer</a>
+			<a href="/checksheet">Checksheet</a>	
+		  <div class="dropdown">
+		    <button class="dropbtn">Add +
+		      <i class="fa fa-caret-down"></i>
+		    </button>
+		    <div class="dropdown-content">
+			<a href="/add-transferor">Add Transferor</a>
+			<a href="/add-location">Add Location</a>
+		    </div>
+		  </div>
+		    <div class="dropdown">
+		    <button class="dropbtn">Reports
+		      <i class="fa fa-caret-down"></i>
+		    </button>
+		    <div class="dropdown-content">
+			<a href="/get-report">Pretty Report</a>
+			<a href="/print-report">Ugly Report</a>
+		    </div>
+		  </div>
+		  	{% if username != "Guest" %}
+				<a href="/logout">Logout</a>
+			{% endif %}
+			{% if username == "Guest" %}
+				<a href="/login">Login</a>
+			{% endif %}
+		  <a href="javascript:void(0);" class="icon" onclick="myFunction()">&#9776;</a>
+		</div> 
 	</div>
 </div>
