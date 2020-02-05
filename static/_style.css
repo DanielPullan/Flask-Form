@@ -170,7 +170,9 @@ input[type=submit]{
   color: var(--primary_colour);
   background-color: var(--background);
   padding: 1rem;
-  margin-top:2.4rem;  
+  height: 3rem;
+  margin-top: 2.4rem;
+  width: 94%;
 }
 
 input[type=password]{
@@ -183,7 +185,7 @@ input[type=password]{
 select {
   color: var(--primary_colour);
   background-color: var(--background);
-  width: 100%;
+  width: 94%;
   padding: 1rem;
   font-size: 1.4rem
 }
@@ -192,7 +194,7 @@ button {
   color: var(--primary_colour);
   background-color: var(--background);
   border-radius: 0.3rem;
-  padding: 1rem;
+  padding: 1.2rem;
   font-size: 1.4rem
 }
 
@@ -269,8 +271,8 @@ html {
   font-size: 1.2rem;
   border: none;
   outline: none;
-  padding: 14px 1.4rem;
   margin: 0;
+  background-color: var(--background-color)
 }
 
 /* Style the dropdown content (hidden by default) */
@@ -287,6 +289,7 @@ html {
   padding: 1.2rem 1.4rem;
   display: block;
   text-align: left;
+  background-color: var(--background)
 }
 
 /* Add a dark background on topnav links and the dropdown button on hover */
@@ -338,11 +341,10 @@ html {
 input[type="checkbox"]{
     -webkit-appearance: initial;
     appearance: initial;
-    background: #404552;
+    background: var(--background);
     width: 40px;
     height: 40px;
     border: none;
-    background: #404552;
     position: relative;
     border: 1px #fff solid;
 }
@@ -352,7 +354,7 @@ input[type="checkbox"]:checked {
 input[type="checkbox"]:checked:after {
     /* Heres your symbol replacement - this is a tick in Unicode. */
     content: "\2713";
-    color: #404552;
+    color: var(--background);
     /* The following positions my tick in the center, 
      * but you could just overlay the entire box
      * with a full after element with a background if you want to */

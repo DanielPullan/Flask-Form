@@ -33,12 +33,9 @@ def checksheet():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
 		if request.method == 'POST':
-			
-			#name = request.form['name']
-			#lastname = request.form['lastname']
-			#email = request.form['email']
+		
 
-			f1 = request.form['name']
+			f1 = str(request.form['name'])
 			f2 = request.form['location']
 			f3 = request.form['registration']
 			f4 = request.form['full_toilet_removed']
@@ -56,10 +53,8 @@ def checksheet():
 			cur.execute("INSERT INTO checksheet3 (name, location, registration, full_toilet_removed, clean_toilet_cartridge_supplied, new_soap_supplied_to_canteen_and_toilet, new_hand_sanitiser_supplied_to_canteen_and_toilet, toilet_flush_water_refilled, hand_wash_water_refilled_and_dirty_water_emptied, canteen_cleaned, toilet_area_cleaned, toilet_roll_supplied,hand_towels_supplied) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13))
 			cur.close()
 
-			#return '''<h1>Data Submitted</h1>
-			#		  <p>Values: {}{}{}</p>'''.format(name, lastname, email)
-
 			return render_template("checksheet-success.html")
+
 	else:
 		res = make_response(redirect('/stare'))
 		return res
@@ -146,6 +141,40 @@ def form_example():
 
 		title = "Form Example"
 		return render_template("form-example.html", title=title)
+	else:
+		res = make_response(redirect('/stare'))
+		return res
+
+
+@app.route('/add-agent', methods=['GET', 'POST']) #allow both GET and POST requests
+def add_agent():
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		if request.method == 'POST':
+			
+			name = request.form['name']
+			lastname = request.form['lastname']
+			phonenumber =  request.form['phonenumber']
+			email = request.form['email']
+			business = request.form['business']
+			address_line1 = request.form['address_line1']
+			address_line2 = request.form['address_line2']
+			town = request.form['town']
+			county = request.form['county']
+			postcode = request.form['postcode']
+			siccode = request.form['siccode']
+
+
+			cur = conn.cursor()
+			cur.execute("INSERT INTO agents (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode))
+			cur.close()
+
+			return render_template("form-success.html")
+			
+			
+
+		title = "Add Agent"
+		return render_template("add-agent.html", title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
