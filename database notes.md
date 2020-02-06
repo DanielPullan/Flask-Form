@@ -8,8 +8,18 @@
 ## agents - list of agents
 
 ```mysql
-
-
+number
+name
+lastname
+phonenumber
+email
+business
+address_line1
+address_line2
+town
+county
+postcode
+siccode
 ```
 
 

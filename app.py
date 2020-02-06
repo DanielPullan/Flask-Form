@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, make_response, redirect
 import pymysql
 from config import where_did_you_come_from, the_greatest_username_ever, the_most_secure_password_ever
+import datetime
  
 app = Flask(__name__)
 
@@ -397,6 +398,46 @@ def print_report():
 	else:
 		res = make_response(redirect('/stare'))
 		return res
+
+@app.route('/enable-form', methods=['GET', 'POST'])
+def enable():
+	if request.method == 'POST':
+		name = request.form['name']
+		location =  request.form['location']
+		registration = request.form['registration']
+		category = request.form ['category']
+		nochange = request.form['nochange']
+
+		#"sole_trader">Sole Trader</option>
+        #          	<option value="partnership_1">Partnership (under 50 employees)</option>
+        #          	<option value="partnership_2">Partnership (more than 50 employees)</option>
+        #          	<option value="government">G
+
+		if category == "sole_trader":
+			price = 100
+		elif category == "partnership_1":
+			price = 200
+		elif category == "partnership_2":
+			price = 400
+		elif category == "government":
+			price = 10000
+		else:
+			print("category not recognised")
+
+		if nochange == "3":
+			price = int(price)
+			nochange = int(nochange)
+			price = (price * nochange)
+		else:
+			print("something ain't right here.")
+
+		day = int(datetime.datetime.today().weekday())
+
+		price = price * day
+
+		return render_template("enable-success.html", name=name, location=location, registration=registration, category=category, price=price, day=day)
+	title = "Enable Form"
+	return render_template("enable-form.html", title=title)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
