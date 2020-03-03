@@ -45,10 +45,6 @@ def send_mail(subject, recipient, template, **kwargs):
 	thr.start()
 	return thr
 
-
-# administrator list
-ADMINS = ['danjakob@enablebusiness.co.uk']
-
 @app.route('/mail')
 def mailandshityo():
 	sendthething('Test', 'Email sending seems to be working.', [test_email_addresses[0]])
