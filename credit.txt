@@ -1,0 +1,6 @@
+Credit
+
+Many thanks to all the people who's code and idea I borrowed/stole during the creation of this thing.
+
+Lee Monroe - For the email template.
+https://github.com/leemunroe/responsive-html-email-template

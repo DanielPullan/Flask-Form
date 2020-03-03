@@ -1,9 +1,12 @@
-from flask import Flask, request, render_template, make_response, redirect
+from flask import Flask, request, render_template, make_response, redirect, url_for
+from flask_mail import Message, Mail
 import pymysql
-from config import where_did_you_come_from, the_greatest_username_ever, the_most_secure_password_ever
+from config import where_did_you_come_from, the_greatest_username_ever, the_most_secure_password_ever, emailaddress, emailpassword, test_email_addresses
 import datetime
+from threading import Thread
  
 app = Flask(__name__)
+## Database stuff 
 
 host = where_did_you_come_from
 user = the_greatest_username_ever
@@ -11,6 +14,45 @@ pw = the_most_secure_password_ever
 database = "thing"
 
 conn = pymysql.connect(host=host, port=3306, user=user, passwd=pw, db=database, autocommit=True)
+
+## Email Stuff
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = emailaddress
+app.config['MAIL_PASSWORD'] = emailpassword
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+
+
+## Global functions
+
+# Send emails. Make sure recipient is in a list.
+def sendthething(subject, messagecontent, recipient):
+	msg = Message(subject, sender = emailaddress, recipients = recipient)
+	msg.body = messagecontent
+	mail.send(msg)
+
+def async_send_mail(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+def send_mail(subject, recipient, template, **kwargs):
+	msg = Message(subject, sender=emailaddress, recipients=[recipient])
+	msg.html = render_template(template, **kwargs)
+	thr = Thread(target=async_send_mail, args=[app, msg])
+	thr.start()
+	return thr
+
+
+# administrator list
+ADMINS = ['danjakob@enablebusiness.co.uk']
+
+@app.route('/mail')
+def mailandshityo():
+	sendthething('Test', 'Email sending seems to be working.', [test_email_addresses[0]])
+	return "done"
 
 @app.route('/')
 def home():
@@ -92,6 +134,29 @@ def waste_transfer():
 				cur = conn.cursor()
 				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (customer_name, collection_point,agent_name))
 				cur.close()
+
+				# Send emails. Make sure recipient is in a list.
+			#def sendthething(subject, messagecontent, recipient):
+   			#	msg = Message(subject, sender = emailaddress, recipients = recipient)
+   			#	msg.body = messagecontent
+   			#	mail.send(msg)
+
+   			#send_mail("New Feedback", app.config['MAIL_DEFAULT_SENDER'], 'mail/feedback.html',
+            #     name=name, email=email)
+
+
+				try:
+					addresses = test_email_addresses
+
+					for x in addresses:
+						send_mail("New Collection", x , 'mail/email.html', title="Collection", customer=customer_name, collection_point=collection_point, agent=agent_name)
+				except Exception as e:
+					print(e)
+					
+
+
+				# This currently works. Look into sending an rendered HTML Email
+				#sendthething('New transfer', customer_name, ['danjakob@enablebusiness.co.uk'])
 
 				## TODO: Email the waste transfer thing
 
@@ -517,6 +582,31 @@ def stare():
 def humans():
 	return render_template('humans.txt')
 
+@app.route('/setup')
+## setup some way of preventing this from running.
+## potentially a script that deletes self after being ran?
+def setup():
+	# import os.system
+	# form to get database details and first user
+	host = request.form['host']
+	user = request.form['user']
+	password = request.form['password']
+	database = request.form['database']
+
+	admin_username = request.form['admin_username']
+	admin_password = request.form['admin_password']
+
+	# script to create databases
+	#	subprocess.run(['mysql','-u', user, '-p'])
+	
+	# check connection to database 
+
+	try:
+		conn = pymysql.connect(host=host, port=3306, user=user, passwd=pw, db=database, autocommit=True)
+
+	except:
+		return "Database setup failed. Contact support."
+		# system.play(['video', 'herecomesthemoney.mp4'])
 
 if __name__ == "__main__":
 	app.run(debug=True)
