@@ -45,11 +45,6 @@ def send_mail(subject, recipient, template, **kwargs):
 	thr.start()
 	return thr
 
-@app.route('/mail')
-def mailandshityo():
-	sendthething('Test', 'Email sending seems to be working.', [test_email_addresses[0]])
-	return "done"
-
 @app.route('/')
 def home():
 
@@ -381,6 +376,101 @@ def get_report():
 		res = make_response(redirect('/stare'))
 		return res
 
+@app.route('/email-report')
+def email_report():
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		current_agent = str(request.cookies.get('User'))
+
+		cur = conn.cursor()
+		cur.execute("SELECT * from agents where name = %s", (current_agent))
+		agents_result = cur.fetchone()[0:12]
+		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
+		cur.close()
+
+		# get customer name
+		cur = conn.cursor()
+		cur.execute("SELECT customer_name FROM waste_transfer where agent_name = %s ORDER BY number DESC LIMIT 1", (current_agent))
+		customer = str(cur.fetchone()[0])
+		cur.close()
+
+		# get location name
+		cur = conn.cursor()
+		cur.execute("SELECT collection_point from waste_transfer where agent_name = %s ORDER BY number DESC LIMIT 1", (current_agent))
+		job_location = cur.fetchone()[0]
+		cur.close()
+
+		# get location details
+		cur = conn.cursor()
+		cur.execute("SELECT * from collection_point where name = %s", (job_location))
+		collection_result = cur.fetchone()[0:8]
+		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
+		cur.close()
+
+		cur = conn.cursor()
+		cur.execute("SELECT * from transferors where name = %s", (customer))
+		transferors_result = cur.fetchone()[0:12]
+		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
+		cur.close()
+
+		collection_name = str(collection_result[1])
+		collection_company = str(collection_result[2])
+		collection_address_line1 = str(collection_result[3])
+		collection_address_line2 = str(collection_result[4])
+		collection_town = str(collection_result[5])
+		collection_county = str(collection_result[6])
+		collection_postcode = str(collection_result[7])
+
+		transferors_name = str(transferors_result[1])
+		transferors_lastname = str(transferors_result[2])
+		transferors_phonenumber = str(transferors_result[3])
+		transferors_email = str(transferors_result[4])
+		transferors_business = str(transferors_result[5])
+		transferors_address_line1 = str(transferors_result[6])
+		transferors_address_line2 = str(transferors_result[7])
+		transferors_town = str(transferors_result[8])
+		transferors_county = str(transferors_result[9])
+		transferors_postcode = str(transferors_result[10])
+		transferors_siccode = str(transferors_result[11])
+
+		agents_name = str(agents_result[1])
+		agents_lastname = str(agents_result[2])
+		agents_phonenumber = str(agents_result[3])
+		agents_email = str(agents_result[4])
+		agents_business = str(agents_result[5])
+		agents_address_line1 = str(agents_result[6])
+		agents_address_line2 = str(agents_result[7])
+		agents_town = str(agents_result[8])
+		agents_county = str(agents_result[9])
+		agents_postcode = str(agents_result[10])
+		agents_siccode = str(agents_result[11])
+
+		# Note to future Dan. the above works. you need to create a template for a report. Look at the dead trees on the desk for ideas. This was a massive pain to get working right.
+
+		title="Report"
+
+
+		try:
+			addresses = test_email_addresses
+
+			for x in addresses:
+				send_mail("New Collection", x , 'mail/email-report.html', title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agent_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
+
+			return make_response(redirect('/'))
+		
+
+		except Exception as e:
+					print(e)
+	
+
+		
+		else:
+			res = make_response(redirect('/stare'))
+			return res
+
+
+
+
 @app.route('/print-report')
 def print_report():
 	cookie = str(request.cookies.get('OhCanada'))
@@ -459,6 +549,10 @@ def print_report():
 	else:
 		res = make_response(redirect('/stare'))
 		return res
+
+
+
+
 
 @app.route('/enable-form', methods=['GET', 'POST'])
 def enable():
@@ -577,6 +671,11 @@ def stare():
 @app.route('/humans.txt')
 def humans():
 	return render_template('humans.txt')
+
+@app.route('/mail')
+def mailandshityo():
+	sendthething('Test', 'Email sending seems to be working.', [test_email_addresses[0]])
+	return "done"
 
 @app.route('/setup')
 ## setup some way of preventing this from running.
