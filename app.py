@@ -23,6 +23,7 @@ app.config['MAIL_USERNAME'] = emailaddress
 app.config['MAIL_PASSWORD'] = emailpassword
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+
 mail = Mail(app)
 
 
@@ -454,7 +455,7 @@ def email_report():
 			addresses = test_email_addresses
 
 			for x in addresses:
-				send_mail("New Collection", x , 'mail/email-report.html', title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agent_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
+				send_mail("New Collection", x , 'mail/collection-email-report.html', title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agent_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
 
 			return make_response(redirect('/'))
 		
