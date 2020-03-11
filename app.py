@@ -4,9 +4,13 @@ import pymysql
 from config import where_did_you_come_from, the_greatest_username_ever, the_most_secure_password_ever, emailaddress, emailpassword, test_email_addresses
 import datetime
 from threading import Thread
- 
+
+
 app = Flask(__name__)
-## Database stuff 
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['PROPAGATE_EXCEPTIONS'] = True
+## Database stuff
 
 host = where_did_you_come_from
 user = the_greatest_username_ever
@@ -26,6 +30,8 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
 
+known_issues = ['Database crashes/timesout overnight']
+
 
 ## Global functions
 
@@ -35,16 +41,10 @@ def sendthething(subject, messagecontent, recipient):
 	msg.body = messagecontent
 	mail.send(msg)
 
-def async_send_mail(app, msg):
-    with app.app_context():
-        mail.send(msg)
-
 def send_mail(subject, recipient, template, **kwargs):
 	msg = Message(subject, sender=emailaddress, recipients=[recipient])
 	msg.html = render_template(template, **kwargs)
-	thr = Thread(target=async_send_mail, args=[app, msg])
-	thr.start()
-	return thr
+	mail.send(msg)
 
 @app.route('/')
 def home():
@@ -61,7 +61,7 @@ def home():
 		user_logged_in = False
 
 	title = "Home"
-	return render_template("index.html", username=usercookie, userIP=userIP, title=title)
+	return render_template("index.html", username=usercookie, userIP=userIP, title=title, known_issues=known_issues)
 
 @app.route('/checksheet', methods=['GET', 'POST']) #allow both GET and POST requests
 def checksheet():
@@ -88,7 +88,7 @@ def checksheet():
 			cur.execute("INSERT INTO checksheet3 (name, location, registration, full_toilet_removed, clean_toilet_cartridge_supplied, new_soap_supplied_to_canteen_and_toilet, new_hand_sanitiser_supplied_to_canteen_and_toilet, toilet_flush_water_refilled, hand_wash_water_refilled_and_dirty_water_emptied, canteen_cleaned, toilet_area_cleaned, toilet_roll_supplied,hand_towels_supplied) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13))
 			cur.close()
 
-			return render_template("checksheet-success.html")
+			return render_template("form-success.html")
 
 	else:
 		res = make_response(redirect('/stare'))
@@ -165,7 +165,7 @@ def waste_transfer():
 		list_of_customers = [str(x) for x, in rows]
 
 		cur = conn.cursor()
-		cur.execute("select name from collection_point")
+		cur.execute("select company from collection_point")
 		rows = cur.fetchall()
 		cur.close()
 
@@ -178,31 +178,6 @@ def waste_transfer():
 	else:
 		res = make_response(redirect('/stare'))
 		return res
-
-@app.route('/form-example', methods=['GET', 'POST']) #allow both GET and POST requests
-def form_example():
-	cookie = str(request.cookies.get('OhCanada'))
-	if cookie == "GreenAndPleasantLand":
-		if request.method == 'POST':
-			try:
-				name = request.form['name']
-				lastname = request.form['lastname']
-				email = request.form['email']
-
-				cur = conn.cursor()
-				cur.execute("INSERT INTO users (name,lastname,email) VALUES (%s,%s,%s);", (name, lastname,email))
-				cur.close()
-
-				return render_template("form-success.html", name=name, lastname=lastname, email=email)
-			except:
-				return render_template("form-failure.html")
-
-		title = "Form Example"
-		return render_template("form-example.html", title=title)
-	else:
-		res = make_response(redirect('/stare'))
-		return res
-
 
 @app.route('/add-agent', methods=['GET', 'POST']) #allow both GET and POST requests
 def add_agent():
@@ -289,8 +264,9 @@ def add_location():
 				cur.close()
 
 				return render_template("form-success.html")
-			except:
-				return render_template("form-failure.html")
+			except Exception as e:
+				errormessage = str(e)
+				return render_template("form-failure.html", errormessage=errormessage)
 
 		title="Add Location"
 		return render_template("add-location.html", title=title)
@@ -374,8 +350,8 @@ def get_report():
 
 		return render_template("report.html", title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agent_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
 	else:
-		res = make_response(redirect('/stare'))
-		return res
+		return render_template('stare.html', title=title)
+	
 
 @app.route('/email-report')
 def email_report():
@@ -705,4 +681,4 @@ def setup():
 		# system.play(['video', 'herecomesthemoney.mp4'])
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run(debug=true, host='0.0.0.0')

@@ -7,6 +7,12 @@
             <p>This web application is still a heavy work in progress.</p>
             <p>Report any issues to <a href="mailto:danjakob@enablebusiness.co.uk?subject=EB Forms">Support</a></p>
             <p>Your IP address is {{ userIP }}
+	       
+           <p>Known Issues</p>
+		{% for x in known_issues %}
+			<span> {{x}} </span>
+		{% endfor %}
+	
         </div>
     </div>
 </div>
