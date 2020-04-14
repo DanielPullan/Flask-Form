@@ -4,7 +4,7 @@
 		<div class="col-12">
 			<h2>Waste Collection Form</h1>
 			<form method="POST">
-				Transferor Name: <select name ="customer_name">
+				Customer: <select name ="customer_name">
 					{% for x in list_of_customers %}
 						<option value= "{{x}}">{{x}}</option>"
 					{% endfor %}
@@ -15,7 +15,7 @@
 					<option value="Janice">Janice</option>
 					<option value="Ringo">Ringo</option>
 				</select>-->
-				Collection Point: <select name ="collection_point">
+				Collection Point (where is the waste going?): <select name ="collection_point">
 					{% for x in list_of_locations %}
 						<option value= "{{x}}">{{x}}</option>"
 					{% endfor %}

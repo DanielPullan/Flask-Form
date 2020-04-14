@@ -61,6 +61,8 @@ p {
 
 li {
   color: var(--primary_colour);
+  line-break: anywhere;
+  width:100%;
 }
 
 code {
@@ -365,3 +367,9 @@ input[type="checkbox"]:checked:after {
     -moz-transform: translate(-50%,-50%);
     -ms-transform: translate(-50%,-50%);
     transform: translate(-50%,-50%);
+}
+
+span.label {
+  width: 100%;
+  color: #4cb848;
+}

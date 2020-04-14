@@ -5,6 +5,18 @@ from config import where_did_you_come_from, the_greatest_username_ever, the_most
 import datetime
 from threading import Thread
 
+## To the poor soul who gets to manage this when I'm gone,
+## any reference to 'Transferor' means customer, not agent.
+## If you change either the MySQL or email password, this whole
+## thing will stop working until the correct details are in the 
+## config file.
+
+## If you happen to dislike python, I'm so sorry. Personally,
+## I'm a big fan. Hence all this. Email me dan@3264.uk if you 
+## have major issues. I can't promise I'll be able to help but
+## dealing with other people's codebases suck so if I can channel
+## my past stupid self, we should be okay.
+
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -95,14 +107,14 @@ def checksheet():
 		return res
 
 	cur = conn.cursor()
-	cur.execute("select name from transferors")
+	cur.execute("select business from customers")
 	rows = cur.fetchall()
 	cur.close()
 
 	list_of_customers = [str(x) for x, in rows]
 
 	cur = conn.cursor()
-	cur.execute("select name from collection_point")
+	cur.execute("select company from collection_point")
 	rows = cur.fetchall()
 	cur.close()
 
@@ -119,46 +131,21 @@ def waste_transfer():
 		if request.method == 'POST':
 			try:
 
-				customer_name = request.form['customer_name']
+				business_name = request.form['customer_name']
 				collection_point = request.form['collection_point']
 				agent_name = str(request.cookies.get('User'))
 
 				cur = conn.cursor()
-				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (customer_name, collection_point,agent_name))
+				cur.execute("INSERT INTO waste_transfer (customer_name,collection_point,agent_name) VALUES (%s,%s,%s);", (business_name, collection_point,agent_name))
 				cur.close()
 
-				# Send emails. Make sure recipient is in a list.
-			#def sendthething(subject, messagecontent, recipient):
-   			#	msg = Message(subject, sender = emailaddress, recipients = recipient)
-   			#	msg.body = messagecontent
-   			#	mail.send(msg)
-
-   			#send_mail("New Feedback", app.config['MAIL_DEFAULT_SENDER'], 'mail/feedback.html',
-            #     name=name, email=email)
-
-
-				try:
-					addresses = test_email_addresses
-
-					for x in addresses:
-						send_mail("New Collection", x , 'mail/email.html', title="Collection", customer=customer_name, collection_point=collection_point, agent=agent_name)
-				except Exception as e:
-					print(e)
-					
-
-
-				# This currently works. Look into sending an rendered HTML Email
-				#sendthething('New transfer', customer_name, ['danjakob@enablebusiness.co.uk'])
-
-				## TODO: Email the waste transfer thing
-
-				res = render_template('form-success.html', result=qwerty)
+				res = make_response(redirect('/email-report-collection'))
 				return res
 			except:
 				return render_template('form-success.html')
 
 		cur = conn.cursor()
-		cur.execute("select name from transferors")
+		cur.execute("select business from customers")
 		rows = cur.fetchall()
 		cur.close()
 
@@ -171,15 +158,14 @@ def waste_transfer():
 
 		list_of_locations = [str(x) for x, in rows]
 
-		#list_of_customers = ['Billy', 'Barry', 'Ben', 'Boris']
-		#list_of_locations = ['Midgard', 'Isengard', 'Diagon Alley']
 		title = "Waste Transfer"
+
 		return render_template("waste-transfer.html", list_of_customers=list_of_customers, list_of_locations=list_of_locations, title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
 
-@app.route('/add-agent', methods=['GET', 'POST']) #allow both GET and POST requests
+@app.route('/add-agent', methods=['GET', 'POST'])
 def add_agent():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
@@ -212,8 +198,8 @@ def add_agent():
 		res = make_response(redirect('/stare'))
 		return res
 
-@app.route('/add-transferor', methods=['GET', 'POST'])
-def add_transferor():
+@app.route('/add-customer', methods=['GET', 'POST'])
+def add_customer():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
 		if request.method == 'POST':
@@ -231,15 +217,15 @@ def add_transferor():
 				siccode = request.form['siccode']
 
 				cur = conn.cursor()
-				cur.execute("INSERT INTO transferors (name,lastname,phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode))
+				cur.execute("INSERT INTO customers (name,lastname,phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode))
 				cur.close()
 
 				return render_template("form-success.html", name=name, lastname=lastname, email=email)
 			except:
 				return render_template("form-failure.html")
 
-		title = "Add Transferors"
-		return render_template("add-transferor.html", title=title)
+		title = "Add Customer"
+		return render_template("add-customer.html", title=title)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
@@ -300,13 +286,13 @@ def get_report():
 
 		# get location details
 		cur = conn.cursor()
-		cur.execute("SELECT * from collection_point where name = %s", (job_location))
+		cur.execute("SELECT * from collection_point where company = %s", (job_location))
 		collection_result = cur.fetchone()[0:8]
 		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 		cur.close()
 
 		cur = conn.cursor()
-		cur.execute("SELECT * from transferors where name = %s", (customer))
+		cur.execute("SELECT * from customers where business = %s", (customer))
 		transferors_result = cur.fetchone()[0:12]
 		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 		cur.close()
@@ -343,17 +329,16 @@ def get_report():
 		agents_postcode = str(agents_result[10])
 		agents_siccode = str(agents_result[11])
 
-		# Note to future Dan. the above works. you need to create a template for a report. Look at the dead trees on the desk for ideas. This was a massive pain to get working right.
-
 		title="Report"
-		
+		description = "Bags of rubbish. 25 Litres per carton."
+		waste_reg_codes = "20-03-04"
 
-		return render_template("report.html", title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agent_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
+		return render_template("report.html", title=title, description=description, waste_reg_codes=waste_reg_codes, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agents_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
 	else:
 		return render_template('stare.html', title=title)
 	
 
-@app.route('/email-report')
+@app.route('/email-report-collection')
 def email_report():
 	cookie = str(request.cookies.get('OhCanada'))
 	if cookie == "GreenAndPleasantLand":
@@ -368,7 +353,7 @@ def email_report():
 		# get customer name
 		cur = conn.cursor()
 		cur.execute("SELECT customer_name FROM waste_transfer where agent_name = %s ORDER BY number DESC LIMIT 1", (current_agent))
-		customer = str(cur.fetchone()[0])
+		customer_name = str(cur.fetchone()[0])
 		cur.close()
 
 		# get location name
@@ -379,13 +364,13 @@ def email_report():
 
 		# get location details
 		cur = conn.cursor()
-		cur.execute("SELECT * from collection_point where name = %s", (job_location))
+		cur.execute("SELECT * from collection_point where company = %s", (job_location))
 		collection_result = cur.fetchone()[0:8]
 		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 		cur.close()
 
 		cur = conn.cursor()
-		cur.execute("SELECT * from transferors where name = %s", (customer))
+		cur.execute("SELECT * from customers where business = %s", (customer_name))
 		transferors_result = cur.fetchone()[0:12]
 		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 		cur.close()
@@ -422,10 +407,7 @@ def email_report():
 		agents_postcode = str(agents_result[10])
 		agents_siccode = str(agents_result[11])
 
-		# Note to future Dan. the above works. you need to create a template for a report. Look at the dead trees on the desk for ideas. This was a massive pain to get working right.
-
 		title="Report"
-
 
 		try:
 			addresses = test_email_addresses
@@ -435,18 +417,55 @@ def email_report():
 
 			return make_response(redirect('/'))
 		
-
 		except Exception as e:
 					print(e)
-	
-
-		
+			
 		else:
 			res = make_response(redirect('/stare'))
 			return res
+@app.route('/email-report-checksheet', methods=['GET', 'POST']) #allow both GET and POST requests
+def email_checksheet():
+	cookie = str(request.cookies.get('OhCanada'))
+	if cookie == "GreenAndPleasantLand":
+		current_agent = str(request.cookies.get('User'))
+		
+		cur = conn.cursor()
 
+		cur.execute("SELECT * from checksheet3 where agent_name = %s ORDER BY number DESC LIMIT 1", (current_agent))
+		checksheet_result = cur.fetchone()[0:13]
+		cur.close()
 
+		# assign the data from queries to variables
+		collection_1 = str(checksheet_result[1])
+		collection_2 = str(checksheet_result[2])
+		collection_3 = str(checksheet_result[3])
+		collection_4 = str(checksheet_result[4])
+		collection_5 = str(checksheet_result[5])
+		collection_6 = str(checksheet_result[6])
+		collection_7 = str(checksheet_result[7])
+		collection_8 = str(checksheet_result[8])
+		collection_9 = str(checksheet_result[9])
+		collection_10 = str(checksheet_result[10])
+		collection_11 = str(checksheet_result[11])
+		collection_12 = str(checksheet_result[12])
+		collection_13 = str(checksheet_result[13])
 
+		title="Report"
+
+		try:
+			addresses = test_email_addresses
+
+			for x in addresses:
+				send_mail("New Collection", x , 'mail/checksheet-email-report.html', title=title, name = collection_1, location = collection_2, registration = collection_3, check = collection_4, tick_1 = collection_5, tick_2 = collection_6, tick_3 = collection_7,tick_4 = collection_8, tick_5 = collection_9, tick_6 = collection_10, tick_7 = collection_11, tick_8 = collection_12, tick_9 = collection_13)
+
+			return make_response(redirect('/'))
+		
+		except Exception as e:
+					print(e)
+			
+		else:
+			res = make_response(redirect('/stare'))
+			return res
 
 @app.route('/print-report')
 def print_report():
@@ -474,13 +493,13 @@ def print_report():
 
 		# get location details
 		cur = conn.cursor()
-		cur.execute("SELECT * from collection_point where name = %s", (job_location))
+		cur.execute("SELECT * from collection_point where company = %s", (job_location))
 		collection_result = cur.fetchone()[0:8]
 		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 		cur.close()
 
 		cur = conn.cursor()
-		cur.execute("SELECT * from transferors where name = %s", (customer))
+		cur.execute("SELECT * from customers where name = %s", (customer))
 		transferors_result = cur.fetchone()[0:12]
 		#number, name, lastname, phonenumber, email, business, address_line1, address_line2, town, county, postcode, siccode = cur.fetchall()
 		cur.close()
@@ -517,59 +536,13 @@ def print_report():
 		agents_postcode = str(agents_result[10])
 		agents_siccode = str(agents_result[11])
 
-		# Note to future Dan. the above works. you need to create a template for a report. Look at the dead trees on the desk for ideas. This was a massive pain to get working right.
-
 		title="Report"
 		
 
-		return render_template("print-report.html", title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agent_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
+		return render_template("print-report.html", title=title, transferors_name=transferors_name, transferors_lastname=transferors_lastname, transferors_phonenumber=transferors_phonenumber, transferors_email=transferors_email, transferors_business=transferors_business, transferors_address_line1=transferors_address_line1, transferors_address_line2=transferors_address_line2, transferors_town=transferors_town, transferors_county=transferors_county, transferors_postcode=transferors_postcode, transferors_siccode=transferors_siccode, agents_name=agents_name, agents_lastname=agents_lastname, agents_phonenumber=agents_phonenumber, agents_email=agents_email, agents_business=agents_business, agents_address_line1=agents_address_line1, agents_address_line2=agents_address_line2, agents_town=agents_town, agents_county=agents_county, agents_postcode=agents_postcode, agents_siccode=agents_siccode, collection_name=collection_name, collection_company=collection_company, collection_address_line1=collection_address_line1, collection_address_line2=collection_address_line2, collection_town=collection_town, collection_county=collection_county, collection_postcode=collection_postcode)
 	else:
 		res = make_response(redirect('/stare'))
 		return res
-
-
-
-
-
-@app.route('/enable-form', methods=['GET', 'POST'])
-def enable():
-	if request.method == 'POST':
-		name = request.form['name']
-		location =  request.form['location']
-		registration = request.form['registration']
-		category = request.form ['category']
-		nochange = request.form['nochange']
-
-		#"sole_trader">Sole Trader</option>
-        #          	<option value="partnership_1">Partnership (under 50 employees)</option>
-        #          	<option value="partnership_2">Partnership (more than 50 employees)</option>
-        #          	<option value="government">G
-
-		if category == "sole_trader":
-			price = 100
-		elif category == "partnership_1":
-			price = 200
-		elif category == "partnership_2":
-			price = 400
-		elif category == "government":
-			price = 10000
-		else:
-			print("category not recognised")
-
-		if nochange == "3":
-			price = int(price)
-			nochange = int(nochange)
-			price = (price * nochange)
-		else:
-			print("something ain't right here.")
-
-		day = int(datetime.datetime.today().weekday())
-
-		price = price * day
-
-		return render_template("enable-success.html", name=name, location=location, registration=registration, category=category, price=price, day=day)
-	title = "Enable Form"
-	return render_template("enable-form.html", title=title)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -584,8 +557,6 @@ def login():
 		cur.execute("SELECT * FROM login where username = %s;", (username))
 		cur.close()
 		results = cur.fetchone()
-
-	#TODO: blah stuff. get the data from the data in blah to become variables and then do the whole if the form password matches the database one, create the cookie and shit
 
 		security = 0
 
@@ -653,32 +624,6 @@ def humans():
 def mailandshityo():
 	sendthething('Test', 'Email sending seems to be working.', [test_email_addresses[0]])
 	return "done"
-
-@app.route('/setup')
-## setup some way of preventing this from running.
-## potentially a script that deletes self after being ran?
-def setup():
-	# import os.system
-	# form to get database details and first user
-	host = request.form['host']
-	user = request.form['user']
-	password = request.form['password']
-	database = request.form['database']
-
-	admin_username = request.form['admin_username']
-	admin_password = request.form['admin_password']
-
-	# script to create databases
-	#	subprocess.run(['mysql','-u', user, '-p'])
-	
-	# check connection to database 
-
-	try:
-		conn = pymysql.connect(host=host, port=3306, user=user, passwd=pw, db=database, autocommit=True)
-
-	except:
-		return "Database setup failed. Contact support."
-		# system.play(['video', 'herecomesthemoney.mp4'])
 
 if __name__ == "__main__":
 	app.run(debug=true, host='0.0.0.0')

@@ -1,52 +1,119 @@
 {% include "header.html" %}
 
-{{ result }}
-
 <div class="container">
+	<div class="row">
+		<div class="col-12">
+			<h2>About</h2>
+
+			<span class="label">Description of waste:</span> {{ description }}<br>
+			<span class="label">List of waste regulation codes:</span> {{ waste_reg_codes }}
+		</div>
+	</div>
+
+
     <div class="row">
         <div class="col-4">
-            <h2>Transferors Details</h2>
+            <h2>Customer</h2>
+	    <p>Source of the waste</p>
             <ul>
-	            <li>{{ transferors_name }} {{transferors_lastname }}</li><br>
-	            <li>{{ transferors_phonenumber }}</li><br>
-	            <li>{{ transferors_email }}</li><br>
-	            <li>{{ transferors_business }}</li><br>
-	            <li>{{ transferors_address_line1 }}</li><br>
-	            <li>{{ transferors_address_line2 }}</li><br>
-	            <li>{{ transferors_town }}</li><br>
-	            <li>{{ transferors_county }}</li><br>
-	            <li>{{ transferors_postcode }}</li><br>
-	            <li>{{ transferors_siccode }}</li><br>
+	            <li><span class="label">Name:</span><br>
+	            {{ transferors_name }} {{transferors_lastname }}</li>
+	            
+	            <li><span class="label">Phone number:</span><br>
+	            {{ transferors_phonenumber }}</li>
+	            
+	            <li><span class="label">Email Address:</span><br>
+	            {{ transferors_email }}</li><br>
+	            
+	            <li><span class="label">Business:</span><br>
+	            {{ transferors_business }}</li>
+	            
+	            <li><span class="label">Address Line 1:</span><br>
+	            {{ transferors_address_line1 }}</li>
+	            
+	            <li><span class="label">Address Line 2:</span><br>
+	            {{ transferors_address_line2 }}</li>
+	            
+	            <li><span class="label">Town:</span><br>
+	            {{ transferors_town }}</li>
+	            
+	            <li><span class="label">County:</span><br>
+	            {{ transferors_county }}</li>
+	           
+	            <li><span class="label">Postcode:</span><br>
+	            {{ transferors_postcode }}</li>
+	           
+	            <li><span class="label">Siccode:</span><br>
+	            {{ transferors_siccode }}</li>
         	</ul>
         </div>
         <div class="col-4">
-        	<h2>Collection Location</h2>
+        	<h2>Destination</h2>
+		<p>Where the waste is going to</p>
 			<ul>
-				<li>{{collection_name }}</li><br>
-				<li>{{ collection_company  }}</li><br>
-				<li>{{ collection_address_line1 }}</li><br>
-				<li>{{ collection_address_line2 }}</li><br>
-				<li>{{ collection_town }}</li><br>
-				<li>{{ collection_county }}</li><br>
-				<li>{{ collection_postcode }}</li><br>
+				<li><span class="label">Name:</span><br>
+				{{collection_name }}</li>
+				
+				<li><span class="label">Company:</span><br>
+				{{ collection_company  }}</li>
+				
+				<li><span class="label">Address Line 1:</span><br>
+				{{ collection_address_line1 }}</li>
+				
+				<li><span class="label">Address Line 2:</span><br>
+				{{ collection_address_line2 }}</li>
+				
+				<li><span class="label">Town:</span><br>
+				{{ collection_town }}</li>
+				
+				<li><span class="label">County:</span><br>
+				{{ collection_county }}</li>
+				
+				<li><span class="label">Postcode:</span><br>
+				{{ collection_postcode }}</li>
 			</ul>
         </div>
         <div class="col-4">
-        	<h2>Transferees Details</h2>
+        	<h2>Agents</h2>
+		<p>Collector of the waste</p>
         	<ul>
-        		<li>{{ agents_name }} {{agents_lastname }}</li><br>
-	            <li>{{ agents_phonenumber }}</li><br>
-	            <li>{{ agents_email }}</li><br>
-	            <li>{{ agents_business }}</li><br>
-	            <li>{{ agents_address_line1 }}</li><br>
-	            <li>{{ agents_address_line2 }}</li><br>
-	            <li>{{ agents_town }}</li><br>
-	            <li>{{ agents_county }}</li><br>
-	            <li>{{ agents_postcode }}</li><br>
-	            <li>{{ agents_siccode }}</li><br>
-
+        		<li><span class="label">Name:</span><br>
+        		{{ agents_name }} {{agents_lastname }}</li>
+	            
+	            <li><span class="label">Phone number:</span><br>
+	            {{ agents_phonenumber }}</li>
+	            
+	            <li><span class="label">Email address:</span><br>
+	            {{ agents_email }}</li>
+	            
+	            <li><span class="label">Business:</span><br>
+	            {{ agents_business }}</li>
+	            
+	            <li><span class="label">Address Line 1:</span><br>
+	            {{ agents_address_line1 }}</li>
+	            
+	            <li><span class="label">Address Line 2:</span><br>
+	            {{ agents_address_line2 }}</li>
+	            
+	            <li><span class="label">Town:</span><br>
+	            {{ agents_town }}</li>
+	            
+	            <li><span class="label">County:</span><br>
+	            {{ agents_county }}</li>
+	            
+	            <li><span class="label">Postcode:</span><br>
+	            {{ agents_postcode }}</li>
+	            
+	            <li><span class="label">Siccode:</span><br>
+	            {{ agents_siccode }}</li>
         	</ul>
         </div>
+    </div>
+    <div class="row">
+    	<div class="col-12">
+    		<h2>Signatures</h2>
+    		*Insert Signatures here*
+    	</div>
     </div>
 </div>
 
